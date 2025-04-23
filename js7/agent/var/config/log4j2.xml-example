@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" shutdownHook="disable">
+	<Properties>
+		<Property name="TimeZone">${env:JS7_AGENT_TZ:-Etc/UTC}</Property>
+		<Property name="LogDir">${env:JS7_AGENT_LOGS:-logs}</Property>
+		<Property name="LogBasename">${env:JS7_AGENT_APPNAME:-agent}</Property>
+		
+		<Property name="RetainDays">30d</Property>
+		<Property name="MaxSizeOfRolledOverFiles">5GB</Property>
+		<Property name="MaxSizePerFile">100MB</Property>
+		
+		<!-- Log level of the Root Logger. -->
+		<Property name="RootLogLevel">INFO</Property>
+		
+		<!-- Configuration for a 2nd debug log file (OFF|DEBUG|TRACE) 
+			 If this value is set to DEBUG or TRACE then the above 
+			 RootLogLevel has to have the same value.
+		-->
+		<Property name="LogLevelOfDebugLog">OFF</Property>
+		
+	</Properties>
+	
+	<Appenders>
+		<Console name="console" target="SYSTEM_ERR">
+			<PatternLayout pattern="%highlight{%d{EE HH:mm:ss.SSS}{${TimeZone}} %-5level{INFO=info, DEBUG=debug, TRACE=trace} %logger - %message}{WARN=magenta}%n"/>
+		</Console>
+		
+		<RollingRandomAccessFile name="fileInfo"
+				fileName="${LogDir}/${LogBasename}.log"
+				filePattern="${LogDir}/${LogBasename}-%d{yyyy-MM-dd}-%i.log.gz"
+				immediateFlush="false">
+			<PatternLayout pattern="%d{ISO8601}{${TimeZone}} %-5level{INFO=info, DEBUG=debug, TRACE=trace} %logger - %message%n"
+					charset="UTF-8"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy/>
+				<SizeBasedTriggeringPolicy size="${MaxSizePerFile}"/>
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="nomax">
+				<Delete basePath="${LogDir}/" followLinks="true">
+					<IfFileName glob="${LogBasename}-*.log.gz" >
+						<IfAny>
+							<IfLastModified age="${RetainDays}" />
+							<IfAccumulatedFileSize exceeds="${MaxSizeOfRolledOverFiles}"/>
+						</IfAny>
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingRandomAccessFile>
+		
+		<RollingRandomAccessFile name="fileDebug"
+				fileName="${LogDir}/${LogBasename}-debug.log"
+				filePattern="${LogDir}/${LogBasename}-debug-%d{yyyy-MM-dd}-%i.log.gz"
+				immediateFlush="false">
+			<PatternLayout pattern="%d{ISO8601}{${TimeZone}} %-5level{INFO=info, DEBUG=debug, TRACE=trace} %logger - %message%n"
+					charset="UTF-8"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy/>
+				<SizeBasedTriggeringPolicy size="${MaxSizePerFile}"/>
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="nomax">
+				<Delete basePath="${LogDir}/" followLinks="true">
+					<IfFileName glob="${LogBasename}-*.log.gz" >
+						<IfAny>
+							<IfLastModified age="${RetainDays}" />
+							<IfAccumulatedFileSize exceeds="${MaxSizeOfRolledOverFiles}"/>
+						</IfAny>
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingRandomAccessFile>
+	</Appenders>
+	
+	<Loggers>
+		<Logger name="spray" level="INFO"/>
+		<Logger name="akka" level="INFO"/>
+		<Logger name="akka.event.slf4j.Slf4jLogger" level="WARN"/>
+		<Logger name="js7.common.akkahttp.web.auth.GateKeeper" level="ERROR"/>
+		<Root level="${RootLogLevel}">
+			<!--AppenderRef ref="console" level="ERROR"/-->
+			<AppenderRef ref="fileInfo" level="INFO"/>
+			<AppenderRef ref="fileDebug" level="${LogLevelOfDebugLog}"/>
+		</Root>
+	</Loggers>
+</Configuration>

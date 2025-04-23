@@ -1,0 +1,68 @@
+services:
+  js7-controller:
+    image: sosberlin/js7:controller-2-5-0
+    container_name: js7-controller
+    hostname: js7-controller
+    environment:
+      - .env
+    ports:
+      - "14443:4443"
+      - "14445:4445"
+    volumes:
+      - js7-controller-var:/var/sos-berlin.com/js7/controller/var_4445
+    networks:
+      - js7
+
+  js7-joc:
+    image: sosberlin/js7:joc-2-5-0
+    container_name: js7-joc
+    hostname: js7-joc
+    environment:
+      - .env
+    ports:
+      - "14447:4446"
+    volumes:
+      - js7-joc-var:/var/sos-berlin.com/js7/joc/var_4447
+    networks:
+      - js7
+    depends_on:
+      - js7-controller
+
+  js7-agent:
+    image: sosberlin/js7:agent-2-5-0
+    container_name: js7-agent
+    hostname: js7-agent
+    environment:
+      - .env
+    ports:
+      - "14449:4445"
+    volumes:
+      - js7-agent-var:/var/sos-berlin.com/js7/agent/var_4445
+    networks:
+      - js7
+    depends_on:
+      - js7-controller
+
+volumes:
+  js7-controller-var:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/controller/var
+  js7-joc-var:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/joc/var
+  js7-agent-var:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/agent/var
+
+networks:
+  js7:
+    driver: bridge

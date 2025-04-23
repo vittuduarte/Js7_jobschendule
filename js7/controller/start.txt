@@ -1,0 +1,1 @@
+./build.sh --id=js7-prod --http-port=14445 --https-port=14443 --java-options="-Xmx1G"

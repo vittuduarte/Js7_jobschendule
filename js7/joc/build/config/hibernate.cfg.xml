@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<!--
+  CONFIGURAÇÃO UNIFICADA DO HIBERNATE PARA JOC COCKPIT
+  Escolha um dos blocos de conexão (MariaDB, MySQL, PostgreSQL) e ative-o.
+-->
+
+<hibernate-configuration>
+  <session-factory>
+
+    <!-- ========= MARIA DB ========= -->
+    <!--
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+    <property name="hibernate.connection.driver_class">org.mariadb.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mariadb://js7-mariadb:3306/js7</property>
+    <property name="hibernate.connection.username">jobscheduler</property>
+    <property name="hibernate.connection.password">jobscheduler</property>
+    -->
+
+    <!-- ========= MYSQL 5.7 ========= -->
+    <!-- Ativo por padrão -->
+    <!--
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://js7-mysql:3306/js7</property>
+    <property name="hibernate.connection.username">jobscheduler</property>
+    <property name="hibernate.connection.password">jobscheduler</property>
+    -->
+    <!-- ========= MYSQL 8.0 ========= -->
+    <!-- ========= POSTGRESQL ========= -->
+    
+    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+    <property name="hibernate.connection.url">jdbc:postgresql://js7-postgres:5432/js7</property>
+    <property name="hibernate.connection.username">jobscheduler</property>
+    <property name="hibernate.connection.password">jobscheduler</property>
+
+    <!-- ========= COMUM A TODOS ========= -->
+    <property name="hibernate.connection.autocommit">false</property>
+    <property name="hibernate.show_sql">false</property>
+    <property name="hibernate.format_sql">true</property>
+    <property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
+
+    <!-- HikariCP - Pool de conexões -->
+    <property name="hibernate.connection.provider_class">org.hibernate.hikaricp.internal.HikariCPConnectionProvider</property>
+    <property name="hibernate.hikari.maximumPoolSize">10</property>
+
+    <!-- Mapeamento JOC -->
+    <mapping resource="hibernate_mapping/JocInstances.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>
