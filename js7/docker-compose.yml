@@ -23,6 +23,7 @@ services:
       - "14447:4446"
     volumes:
       - js7-joc-var:/var/sos-berlin.com/js7/joc/var_4447
+      - ./joc/build/config/hibernate.cfg.xml:/var/sos-berlin.com/js7/joc/resources/joc/hibernate.cfg.xml:ro
     networks:
       - js7
     depends_on:
