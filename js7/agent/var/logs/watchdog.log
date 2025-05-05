@@ -1,9 +1,0 @@
-...JS7 Agent(4445) is started with pid=822!
-2025-04-23 20:42:54.771 JS7 Agent 2.5.0
-...try to terminate the JS7 Agent(4445) with pid=822.
-{
-  "TYPE": "Accepted"
-}
-2025-04-23 21:37:15.586 JS7 Subagent terminates now (2025-04-23 21:37:15.586)
-...terminated!
-...JS7 Agent terminates with exit code 143
